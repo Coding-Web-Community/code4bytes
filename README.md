@@ -4,9 +4,9 @@
 
 These are the solutions to our frequent coding challenges in our [server](https://discord.gg/j5qZV6).
 
-Each challenge is made by one of our members/mods. If thats not the case, it will be made clear with a direct link to the origin.
+ - Each challenge is made by one of our members/mods. If thats not the case, it will be made clear with a direct link to the origin.
 
-Each solution is written by one of our members, and will be named accordingly.
+ - Each solution is written by one of our members, and will be named accordingly.
 
 If you want to compete, feel free to join our server!
 Have fun, good luck and happy coding!
