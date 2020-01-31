@@ -8,3 +8,4 @@ What is the largest n-digit pandigital prime that exists?
 As with the previous challenges, it's possible to brute force it by trying every combination one by one but note that this will take hours if not days, so try to be smart about what you do first and how you do it! To give you a frame of reference, it shouldn't take more than 1 minute MAX of runtime to calculate the final solution. Tip of the day: prime calculations of O(n) are too slow!
 
 Good luck and happy coding!
+- Challenge from projecteuler.net
