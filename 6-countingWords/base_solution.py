@@ -18,8 +18,8 @@ with open("steve.txt", "r") as r:
 				words.append(replace(word))
 
 
-first_nums = [0]*15
-first_words = [""]*15
+first_nums = [0]*100
+first_words = [""]*100
 
 word_char = {}
 for word in words:
@@ -33,7 +33,12 @@ for word in words:
 		if word_char[word] > first_nums[i] and word not in first_words:
 			first_nums.insert(i, word_char[word])
 			first_words.insert(i, word)
-			del first_nums[15]
-			del first_words[15]			
+			del first_nums[100]
+			del first_words[100]			
 print(first_words)
 print(first_nums)
+
+import matplotlib.pyplot as plt
+
+plt.plot(first_nums)
+plt.show()
