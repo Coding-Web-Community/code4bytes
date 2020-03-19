@@ -27,12 +27,6 @@ type GaussianInstance struct {
 	Time		 int64		`json:"time"`
 }
 
-
-func newRouter() *mux.Router {
-	router := mux.NewRouter()
-	return router
-}
-
 func RandomFloatRange(R *rand.Rand, min float64, max float64) float64 {
 	return float64(min) + R.Float64()*(float64(max)-float64(min))
 }
@@ -66,44 +60,6 @@ func FilterString(input string) (filtered string) {
 	return filtered
 }
 
-func endpoint(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	var gi GaussianInstance
-	gi.Id = FilterString(vars["id"])
-	if len(gi.Id) >= 4 && len(gi.Id) <= 16 {
-		b := sha256.Sum256([]byte(gi.Id))
-		hash := hex.EncodeToString(b[:])
-		gi.Hash = hash
-		if (GaussianInstance{} == m[hash]) {
-			m[hash] = instantiate(gi)
-		}
-		gi = m[hash]
-
-		fmt.Println(vars["id"])
-
-		if time.Now().UnixNano() - gi.Time <= 500000000 && vars["id"] != "golang" {
-			w.WriteHeader(http.StatusTooManyRequests)
-			return
-		}
-
-		var re []string
-		for z := 0; z < 100; z++ {
-			re = append(re, fmt.Sprintf("%f", RandomGaussian(m[hash])))
-		}
-
-		gi = m[hash]
-		gi.Count += 1
-		gi.Time = time.Now().UnixNano()
-		m[hash] = gi
-
-		json.NewEncoder(w).Encode(re)
-
-	} else {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-}
-
 func convertHashToInt(hash string) int64 {
 	var returnInteger string
 	chars := "abcdefghijklmnopqrstuvwxyz"
@@ -120,26 +76,56 @@ func convertHashToInt(hash string) int64 {
 	return int64(i)
 }
 
-func fetch(w http.ResponseWriter, r *http.Request) {
+func stringToHash(s string) string {
+	b := sha256.Sum256([]byte(s))
+	return hex.EncodeToString(b[:])
+}
+
+func endpoint(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	b := sha256.Sum256([]byte(FilterString(vars["id"])))
-	hash := hex.EncodeToString(b[:])
+
 	var gi GaussianInstance
-	fmt.Println(m[hash])
-	gi = m[hash]
+	id := FilterString(vars["id"])
+	if len(id) >= 4 && len(id) <= 16 {
+		hash := stringToHash(id)
+		if (GaussianInstance{} == m[hash]) {
+			m[hash] = instantiate(GaussianInstance {Id: id, Hash: hash})
+		}
+		gi = m[hash]
 
-	data, err := json.Marshal(gi)
-	fmt.Println(data)
+		if time.Now().UnixNano() - gi.Time <= 500000000 && vars["id"] != "golang" {
+			w.WriteHeader(http.StatusTooManyRequests)
+			return
+		}
 
-	if err != nil {
-		fmt.Println(err)
+		var re []string
+		for z := 0; z < 100; z++ {
+			re = append(re, fmt.Sprintf("%f", RandomGaussian(m[hash])))
+		}
+
+		gi.Count += 1
+		gi.Time = time.Now().UnixNano()
+		m[hash] = gi
+
+		json.NewEncoder(w).Encode(re)
+
 	} else {
-		json.NewEncoder(w).Encode(gi)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 }
 
+func fetch(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	hash := stringToHash(vars["id"])
+
+	var gi GaussianInstance
+	gi = m[hash]
+	json.NewEncoder(w).Encode(gi)
+}
+
 func handleRequests() {
-	router := newRouter().StrictSlash(true)
+	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/{id}", middleware(endpoint)).Methods("GET")
 	router.HandleFunc("/fetchmethisshit/{id}", middleware(fetch)).Methods("GET")
 	err := http.ListenAndServe(":8080", router)

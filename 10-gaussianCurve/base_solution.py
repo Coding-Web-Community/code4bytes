@@ -4,7 +4,7 @@ from tqdm import tqdm
 import numpy as np
 import time
 
-url = "http://codingweb.eu-central-1.elasticbeanstalk.com/golang"
+url = "http://codingweb.eu-central-1.elasticbeanstalk.com/test234"
 a = []
 
 start = time.time()
