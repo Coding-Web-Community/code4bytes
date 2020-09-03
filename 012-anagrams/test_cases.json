@@ -1,8 +1,8 @@
-{"s": "vile", "t": "evil","truth": "true"}
-{"s": "serbia", "t": "rabies","truth": "true"}
-{"s": "mathis", "t": "golang", "truth": "false"}
-{"s": "a", "t": "a", "truth": "true"}
-{"s": "aba", "t": "aab", "truth": "true"}
-{"s": "aba", "t": "baa", "truth": "true"}
-{"s": "monkey", "t": "yeknom", "truth": "true"}
-{"s": "bitchass", "t": "penisboy", "truth": "false"}
+{"args": ["vile", "evil"],"truth": "true"}
+{"args": ["serbia", "rabies"],"truth": "true"}
+{"args": ["mathis", "golang"], "truth": "false"}
+{"args": ["a", "b"], "truth": "false"}
+{"args": ["aba", "aab"], "truth": "true"}
+{"args": ["aba", "baa"], "truth": "true"}
+{"args": ["monkey", "yeknom"], "truth": "true"}
+{"args": ["bitchass", "penisboy"], "truth": "false"}
