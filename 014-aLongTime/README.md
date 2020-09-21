@@ -30,4 +30,7 @@ code closest to average:  lHrAwUQAmJ
 - 3rd place: 150.000 bytes!
 - Runner up: 75.000 bytes!
 
+I would like to add this was a suggestion by @!craftxbox
+So if you liked the challenge, give him a thumbs up!
+
 Good luck, have fun and don't cheat!
