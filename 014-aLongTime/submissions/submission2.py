@@ -1,33 +1,29 @@
-from datetime import datetime, timedelta
-import re
+from datetime import datetime
 
 
-date_times = {}
-pattern = r"((?:\d*-?){3}\s(?:\d*:?){3})\s-\s((?:\d*-?){3}\s(?:\d*:?){3})\s\|\s([a-zA-Z]*)\n"
-with open('time.log', 'r') as f:
-    max_val = (timedelta.min, '')
-    min_val = (timedelta.max, '')
-    delta_sum = timedelta()
+delta_array = []
+delta_sum = 0
+max_delta = (0, '')
+min_delta = (float('inf'), '')
 
-    matches = re.findall(pattern, f.read())
-    for match in matches:
-        start, end, code = match
-        delta = datetime.strptime(end, '%Y-%m-%d %H:%M:%S') - datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
-        if delta < min_val[0]:
-            min_val = (delta, code)
+with open('time.log') as f:
+    for row in f:
+        dates, code = row.split(' | ')
+        dates = dates.split(' - ')
+        code = code.strip()
 
-        if delta > max_val[0]:
-            max_val = (delta, code)
+        delta = (datetime.fromisoformat(dates[1]) - datetime.fromisoformat(dates[0])).total_seconds()
+        if delta > max_delta[0]:
+            max_delta = (delta, code)
 
-        date_times[code] = delta
+        if delta < min_delta[0]:
+            min_delta = (delta, code)
+
         delta_sum += delta
+        delta_array.append((delta, code))
 
-    average_delta = delta_sum / len(matches)
-    closest_val = (delta, code)
-    for code, delta in date_times.items():
-        if abs(delta - average_delta) < abs(closest_val[0] - average_delta):
-            closest_val = (delta, code)
-
-    print(f"Shortest time delta: {min_val[1]}")
-    print(f"Longest time delta: {max_val[1]}")
-    print(f"Closest time delta: {closest_val[1]}")
+    average = delta_sum / len(delta_array)
+    closest_delta = min(delta_array, key=lambda x: abs(x[0]-average))
+    print(f"Shortest time delta: {min_delta[1]}")
+    print(f"Longest time delta: {max_delta[1]}")
+    print(f"Closest time delta: {closest_delta[1]}")
